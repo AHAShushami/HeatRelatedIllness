@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Ringkas Latihan Penyakit Berkaitan Haba</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-50:#f0f9ff; --primary-100:#e0f2fe; --primary-500:#0ea5e9; --primary-600:#0284c7; --primary-700:#0369a1;
+            --danger-50:#fef2f2; --danger-100:#fee2e2; --danger-200:#fecaca; --danger-500:#ef4444; --danger-600:#dc2626; --danger-700:#b91c1c;
+            --success-50:#ecfdf5; --success-500:#10b981; --success-600:#059669;
+            --warning-50:#fffbeb; --warning-100:#fef3c7; --warning-500:#f59e0b; --warning-600:#d97706;
+            --slate-50:#f8fafc; --slate-100:#f1f5f9; --slate-200:#e2e8f0; --slate-300:#cbd5e1; --slate-500:#64748b; --slate-700:#334155; --slate-800:#1e293b; --slate-900:#0f172a;
+            --radius-sm:0.375rem; --radius-md:0.75rem; --radius-lg:1rem; --radius-xl:1.5rem;
+            --shadow-sm:0 1px 2px 0 rgba(0,0,0,.05); --shadow-md:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06); --shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05); --shadow-float:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04);
+        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+        body{background:#f8fafc;background-image:radial-gradient(at 0% 0%,hsla(200,100%,94%,1) 0,transparent 50%),radial-gradient(at 100% 0%,hsla(0,100%,96%,1) 0,transparent 50%);background-attachment:fixed;color:var(--slate-800);line-height:1.6;-webkit-font-smoothing:antialiased}
+        h1,h2,h3,h4{color:var(--slate-900);line-height:1.3;font-weight:700}
+        ul{padding-left:1.5rem} li{margin-bottom:0.35rem}
+
+        header{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.8);padding:1rem 0;position:sticky;top:0;z-index:50;box-shadow:var(--shadow-sm)}
+        .header-container{max-width:900px;margin:0 auto;padding:0 1.5rem;display:flex;justify-content:space-between;align-items:center}
+        .header-title-group{display:flex;align-items:center;gap:1.25rem}
+        .header-icon{font-size:2.25rem;background:linear-gradient(135deg,var(--danger-500),var(--danger-700));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 4px rgba(239,68,68,.3))}
+        .header-title{font-size:1.25rem;letter-spacing:-.025em} .header-subtitle{font-size:.875rem;color:var(--slate-500);font-weight:500}
+        .header-actions{display:flex;align-items:center;gap:1.5rem}
+        .header-topic{font-size:.875rem;font-weight:600;color:var(--primary-600);background:var(--primary-50);padding:.35rem .875rem;border-radius:999px;display:none}
+        .btn-home{background:#fff;color:var(--slate-500);border:1px solid var(--slate-200);width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:var(--shadow-sm)}
+        .btn-home:hover{background:var(--slate-50);color:var(--danger-600);border-color:var(--danger-100);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+        @media(min-width:768px){.header-topic{display:block}.header-title{font-size:1.5rem}}
+
+        main{padding:1.5rem 1.5rem 1rem;display:flex;flex-direction:column;align-items:center}
+        .module-container{width:100%;max-width:850px;background:rgba(255,255,255,.95);border-radius:var(--radius-xl);box-shadow:var(--shadow-float);border:1px solid rgba(255,255,255,.5);overflow:hidden}
+        .progress-container{height:6px;background:var(--slate-100);width:100%}
+        .progress-bar{height:100%;background:linear-gradient(90deg,var(--primary-500),var(--primary-600));width:0%;transition:width .6s cubic-bezier(.4,0,.2,1);border-radius:0 4px 4px 0}
+        .module-content{padding:2rem 3rem 1rem}
+        @media(max-width:640px){.module-content{padding:1.25rem 1.25rem .5rem}}
+
+        .step-content{display:none!important;opacity:0;transform:translateY(15px)}
+        .step-content.active{display:block!important;animation:slideUpFade .6s cubic-bezier(.16,1,.3,1) forwards}
+        .step-content > *:last-child{margin-bottom:0!important}
+        @keyframes slideUpFade{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+
+        .step-badge{display:inline-flex;align-items:center;background:var(--primary-50);color:var(--primary-700);padding:.35rem 1rem;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem;border:1px solid var(--primary-100)}
+        .step-title{font-size:1.875rem;letter-spacing:-.025em;margin-bottom:.75rem} .step-desc{color:var(--slate-500);margin-bottom:2rem;font-size:1.05rem}
+
+        .form-container{background:#fff;padding:2.5rem;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--slate-100);max-width:480px;margin:0 auto}
+        .form-group{margin-bottom:1.5rem} .form-label{display:block;font-size:.875rem;font-weight:600;margin-bottom:.5rem;color:var(--slate-700)}
+        .form-input,.form-select{width:100%;padding:.875rem 1rem;border:1px solid var(--slate-300);border-radius:var(--radius-md);font-size:1rem;color:var(--slate-800);background:var(--slate-50);transition:all .3s;outline:none}
+        .form-input:focus,.form-select:focus{background:#fff;border-color:var(--primary-500);box-shadow:0 0 0 4px var(--primary-100)}
+
+        .btn{padding:.875rem 1.75rem;border-radius:var(--radius-md);font-weight:600;font-size:1rem;cursor:pointer;border:none;display:inline-flex;align-items:center;justify-content:center;gap:.75rem;transition:all .3s}
+        .btn-primary{background:linear-gradient(135deg,var(--primary-500),var(--primary-600));color:#fff;box-shadow:0 4px 6px -1px rgba(14,165,233,.3)}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 15px -3px rgba(14,165,233,.4)}
+        .btn-secondary{background:#fff;color:var(--slate-700);border:1px solid var(--slate-200);box-shadow:var(--shadow-sm)}
+        .btn-secondary:hover{background:var(--slate-50);transform:translateY(-2px)}
+        .btn-success{background:linear-gradient(135deg,var(--success-500),var(--success-600));color:#fff;box-shadow:0 4px 6px -1px rgba(16,185,129,.3)}
+        .btn-success:hover{transform:translateY(-2px);box-shadow:0 10px 15px -3px rgba(16,185,129,.4)}
+        .w-full{width:100%}
+
+        .alert{padding:1.25rem 1.5rem;border-radius:var(--radius-md);margin-bottom:2rem;display:flex;gap:1.25rem;border-left:5px solid transparent;box-shadow:var(--shadow-sm);background:#fff;align-items:flex-start}
+        .alert-danger{background:linear-gradient(to right,var(--danger-50),#fff);border-left-color:var(--danger-500);border-top:1px solid var(--danger-100);border-right:1px solid var(--danger-100);border-bottom:1px solid var(--danger-100)}
+        .alert-danger .alert-icon{color:var(--danger-500);background:#fff;padding:.75rem;border-radius:50%;box-shadow:var(--shadow-sm);flex-shrink:0}
+        .alert-warning{background:linear-gradient(to right,var(--warning-50),#fff);border:1px solid var(--warning-100);border-left:5px solid var(--warning-500)}
+        .alert-warning .alert-icon{color:var(--warning-600);background:#fff;padding:.75rem;border-radius:50%;flex-shrink:0}
+
+        .img-container{width:100%;margin:2rem 0;text-align:center}
+        .img-container img{max-width:100%;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);border:1px solid var(--slate-100)}
+
+        .grid-2{display:grid;grid-template-columns:1fr;gap:1.5rem}
+        @media(min-width:768px){.grid-2{grid-template-columns:1fr 1fr}}
+
+        .info-card{background:#fff;padding:1.75rem;border-radius:var(--radius-lg);border:1px solid var(--slate-200);box-shadow:var(--shadow-md);transition:transform .3s;position:relative;overflow:hidden}
+        .info-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+        .info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+        .info-card.orange::before{background:linear-gradient(90deg,#fbbf24,var(--warning-500))} .info-card.blue::before{background:linear-gradient(90deg,#38bdf8,var(--primary-500))} .info-card.red::before{background:linear-gradient(90deg,#f87171,var(--danger-500))}
+        .info-card h4{display:flex;align-items:center;gap:.75rem;font-size:1.05rem;margin-bottom:1rem}
+        .info-card.orange h4{color:var(--warning-600)} .info-card.blue h4{color:var(--primary-600)} .info-card.red h4{color:var(--danger-600)}
+
+        .diag-card{background:#fff;padding:1.75rem;border-radius:var(--radius-lg);border:1px solid var(--slate-200);margin-bottom:1.25rem;display:flex;gap:1.5rem;box-shadow:var(--shadow-sm)}
+        .diag-card.red{border-color:var(--danger-200);background:linear-gradient(to right,var(--danger-50),#fff)}
+        .diag-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--primary-50);color:var(--primary-600);flex-shrink:0}
+        .diag-card.red .diag-icon{background:var(--danger-100);color:var(--danger-600)}
+        .diag-content h3{font-size:1.15rem;margin-bottom:.75rem}
+        .diag-content ul{list-style:none;padding:0;margin:0}
+        .diag-content li{position:relative;padding-left:1.5rem;margin-bottom:.5rem;color:var(--slate-700)}
+        .diag-content li::before{content:'•';position:absolute;left:0;color:var(--primary-500);font-weight:bold;font-size:1.2rem}
+        .diag-card.red li::before{color:var(--danger-500)}
+
+        .myth-card{background:#fff;padding:1.75rem;border-radius:var(--radius-lg);border:1px solid var(--slate-200);margin-bottom:1.25rem;box-shadow:var(--shadow-sm)}
+        .myth-card h3{font-size:1.1rem;margin-bottom:.5rem;color:var(--primary-700)}
+
+        .workflow{background:#fff;padding:2rem;border-radius:var(--radius-lg);border:1px solid var(--slate-200);box-shadow:var(--shadow-md);margin-bottom:2rem}
+        .workflow-step{display:flex;gap:1rem;margin-bottom:1.5rem;position:relative}
+        .workflow-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:40px;bottom:-15px;width:2px;background:var(--slate-200)}
+        .workflow-num{width:36px;height:36px;border-radius:50%;background:var(--primary-100);color:var(--primary-700);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;z-index:1;border:2px solid #fff}
+
+        .quiz-item{background:#fff;border:1px solid var(--slate-200);padding:2rem;border-radius:var(--radius-lg);margin-bottom:1.5rem;box-shadow:var(--shadow-sm)}
+        .quiz-question{font-size:1.05rem;font-weight:600;margin-bottom:1.25rem;line-height:1.5}
+        .quiz-options{display:flex;flex-direction:column;gap:.75rem}
+        .quiz-option{display:flex;align-items:center;padding:1rem 1.25rem;border:2px solid var(--slate-200);border-radius:var(--radius-md);cursor:pointer;transition:all .2s;background:var(--slate-50)}
+        .quiz-option:hover{border-color:var(--primary-300);background:var(--primary-50)}
+        .quiz-option input[type="radio"]{position:absolute;opacity:0;cursor:pointer}
+        .quiz-option .radio-custom{width:20px;height:20px;border:2px solid var(--slate-400);border-radius:50%;margin-right:1rem;display:flex;align-items:center;justify-content:center;background:#fff;flex-shrink:0}
+        .quiz-option input[type="radio"]:checked ~ .radio-custom{border-color:var(--primary-500);background:var(--primary-500)}
+        .quiz-option input[type="radio"]:checked ~ .radio-custom::after{content:'';width:8px;height:8px;background:#fff;border-radius:50%}
+        .quiz-option input[type="radio"]:checked ~ span{font-weight:600;color:var(--primary-700)}
+        .quiz-option:has(input[type="radio"]:checked){border-color:var(--primary-500);background:var(--primary-50);box-shadow:0 2px 4px rgba(14,165,233,.1)}
+
+        .result-screen{display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 0}
+        .result-icon{font-size:6rem;margin-bottom:1.5rem;background:linear-gradient(135deg,#34d399,var(--success-600));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .score-box{background:linear-gradient(135deg,var(--slate-50),#fff);border:1px solid var(--slate-200);padding:3rem 4rem;border-radius:var(--radius-xl);display:inline-block;margin:2rem 0;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+        .score-box::before{content:'';position:absolute;top:0;left:0;width:100%;height:6px;background:linear-gradient(90deg,#38bdf8,var(--primary-600))}
+        .score-title{font-size:1.125rem;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:.05em}
+        .score-value{font-size:5rem;font-weight:800;color:var(--primary-600);line-height:1} .score-total{font-size:2rem;font-weight:600;color:var(--slate-400)}
+
+        .nav-footer{padding:1.25rem 3rem;border-top:1px solid var(--slate-200);background:var(--slate-50);display:flex;justify-content:space-between;align-items:center;border-radius:0 0 var(--radius-xl) var(--radius-xl)}
+        .hidden{display:none!important}
+        .avatar-circle{width:80px;height:80px;background:linear-gradient(135deg,var(--primary-100),#bae6fd);color:var(--primary-600);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1.5rem;box-shadow:var(--shadow-md);border:3px solid #fff}
+        .callout-phone{margin-top:1rem;background:#fff7ed;color:#9a3412;padding:.75rem 1rem;border-radius:var(--radius-sm);font-size:.875rem;font-weight:600;display:flex;align-items:center;gap:.5rem;border:1px solid #fed7aa}
+        .ref-section{text-align:left;margin-top:3rem;border-top:1px solid var(--slate-200);padding-top:1.5rem}
+        .ref-section h4{font-size:1rem;margin-bottom:.5rem} .ref-section ul{font-size:.875rem;color:var(--slate-500);list-style:none;padding:0;display:flex;flex-direction:column;gap:.5rem}
+
+        /* Step Indicator */
+        .step-indicator{font-size:.875rem;font-weight:600;color:var(--slate-500);display:flex;align-items:center;gap:.5rem;background:var(--slate-100);padding:.4rem .875rem;border-radius:999px}
+        .step-indicator .current{color:var(--primary-600)}
+
+        /* Quiz Feedback */
+        .quiz-option.correct{border-color:var(--success-500)!important;background:var(--success-50)!important}
+        .quiz-option.correct .radio-custom{border-color:var(--success-500)!important;background:var(--success-500)!important}
+        .quiz-option.wrong{border-color:var(--danger-500)!important;background:var(--danger-50)!important}
+        .quiz-option.wrong .radio-custom{border-color:var(--danger-500)!important;background:var(--danger-500)!important}
+        .quiz-feedback{margin-top:.75rem;padding:.75rem 1rem;border-radius:var(--radius-sm);font-size:.875rem;font-weight:600}
+        .quiz-feedback.correct-fb{background:var(--success-50);color:#065f46;border:1px solid #a7f3d0}
+        .quiz-feedback.wrong-fb{background:var(--danger-50);color:#991b1b;border:1px solid var(--danger-200)}
+
+        /* WhatsApp Button */
+        .btn-whatsapp{background:#25D366;color:#fff;box-shadow:0 4px 6px -1px rgba(37,211,102,.3);margin-top:1.5rem}
+        .btn-whatsapp:hover{transform:translateY(-2px);box-shadow:0 10px 15px -3px rgba(37,211,102,.4)}
+
+        /* === MOBILE RESPONSIVE === */
+        @media(max-width:480px){
+            header{padding:.75rem 0}
+            .header-container{padding:0 1rem}
+            .header-title-group{gap:.75rem}
+            .header-title-group img{height:36px!important}
+            .header-title{font-size:1rem!important}
+            .header-subtitle{font-size:.75rem}
+            .btn-home{width:38px;height:38px;font-size:.875rem}
+            main{padding:.75rem .5rem .5rem}
+            .module-container{border-radius:var(--radius-lg)}
+            .module-content{padding:1.25rem 1.25rem .5rem!important}
+            .step-title{font-size:1.375rem!important}
+            .step-desc{font-size:.95rem;margin-bottom:1.25rem}
+            .form-container{padding:1.5rem}
+            .form-input,.form-select{padding:.75rem;font-size:.95rem}
+            .btn{padding:.75rem 1.25rem;font-size:.95rem}
+            .alert{padding:1rem;gap:.75rem;flex-direction:column}
+            .alert .alert-icon{padding:.5rem}
+            .info-card{padding:1.25rem}
+            .info-card h4{font-size:.95rem}
+            .diag-card{padding:1.25rem;gap:1rem;flex-direction:column}
+            .diag-icon{width:40px;height:40px;font-size:1.25rem}
+            .diag-content h3{font-size:1rem}
+            .myth-card{padding:1.25rem}
+            .myth-card h3{font-size:1rem}
+            .workflow{padding:1.25rem}
+            .workflow-step{gap:.75rem}
+            .quiz-item{padding:1.25rem}
+            .quiz-question{font-size:.95rem;margin-bottom:1rem}
+            .quiz-option{padding:.875rem 1rem}
+            .quiz-option .radio-custom{width:18px;height:18px;margin-right:.75rem}
+            .nav-footer{padding:1rem 1.25rem}
+            .score-box{padding:2rem 2.5rem}
+            .score-value{font-size:4rem}
+            .score-total{font-size:1.5rem}
+            .result-icon{font-size:4.5rem}
+            .step-title[style*="2.5rem"]{font-size:1.75rem!important}
+            .avatar-circle{width:64px;height:64px;font-size:2rem}
+            .img-container{margin:1rem 0}
+            .ref-section ul{font-size:.8rem}
+        }
+
+        /* Quiz Timer */
+        .quiz-timer-bar{display:flex;align-items:center;gap:1rem;background:var(--slate-100);padding:.875rem 1.25rem;border-radius:var(--radius-md);margin-bottom:2rem;border:1px solid var(--slate-200)}
+        .timer-track{flex:1;height:8px;background:var(--slate-200);border-radius:99px;overflow:hidden}
+        .timer-fill{height:100%;background:linear-gradient(90deg,var(--success-500),var(--primary-500));border-radius:99px;transition:width 1s linear}
+        .timer-fill.urgent{background:linear-gradient(90deg,var(--danger-500),var(--warning-500))}
+        .timer-text{font-size:1rem;font-weight:700;color:var(--slate-700);min-width:50px;text-align:right;font-variant-numeric:tabular-nums}
+        .timer-text.urgent{color:var(--danger-600)}
+
+        /* Dark Mode Toggle */
+        .btn-dark-toggle{background:#fff;color:var(--slate-500);border:1px solid var(--slate-200);width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:var(--shadow-sm);font-size:1.1rem}
+        .btn-dark-toggle:hover{background:var(--slate-50);transform:translateY(-2px)}
+
+        /* Sheets Status */
+        .sheets-status{margin-top:1rem;padding:.75rem 1rem;border-radius:var(--radius-sm);font-size:.875rem;font-weight:600;display:flex;align-items:center;gap:.5rem}
+        .sheets-status.sending{background:var(--primary-50);color:var(--primary-700);border:1px solid var(--primary-100)}
+        .sheets-status.sent{background:var(--success-50);color:#065f46;border:1px solid #a7f3d0}
+        .sheets-status.error{background:var(--danger-50);color:#991b1b;border:1px solid var(--danger-200)}
+
+        /* === DARK MODE === */
+        html.dark{
+            --slate-50:#0f172a; --slate-100:#1e293b; --slate-200:#334155; --slate-300:#475569; --slate-500:#94a3b8; --slate-700:#cbd5e1; --slate-800:#e2e8f0; --slate-900:#f1f5f9;
+            --primary-50:#0c2d48; --primary-100:#0e3a5c;
+            --danger-50:#3b1111; --danger-100:#4c1d1d; --danger-200:#6b2c2c;
+            --success-50:#052e16; --warning-50:#422006; --warning-100:#4a2608;
+        }
+        html.dark body{background:#0f172a;background-image:radial-gradient(at 0% 0%,hsla(210,50%,15%,1) 0,transparent 50%),radial-gradient(at 100% 0%,hsla(0,30%,15%,1) 0,transparent 50%);color:#e2e8f0}
+        html.dark header{background:rgba(15,23,42,.9);border-bottom-color:rgba(51,65,85,.6)}
+        html.dark .module-container{background:rgba(30,41,59,.95);border-color:rgba(51,65,85,.5)}
+        html.dark .form-container{background:#1e293b;border-color:#334155}
+        html.dark .form-input,html.dark .form-select{background:#0f172a;border-color:#475569;color:#e2e8f0}
+        html.dark .form-input:focus,html.dark .form-select:focus{background:#1e293b;border-color:var(--primary-500)}
+        html.dark .info-card,html.dark .diag-card,html.dark .myth-card,html.dark .workflow,html.dark .quiz-item{background:#1e293b;border-color:#334155}
+        html.dark .quiz-option{background:#0f172a;border-color:#334155}
+        html.dark .quiz-option:hover{background:var(--primary-50);border-color:#475569}
+        html.dark .alert{background:#1e293b}
+        html.dark .alert-danger{background:linear-gradient(to right,#3b1111,#1e293b);border-color:#6b2c2c}
+        html.dark .alert-warning{background:linear-gradient(to right,#422006,#1e293b);border-color:#854d0e}
+        html.dark .alert-danger .alert-icon{background:#1e293b}
+        html.dark .nav-footer{background:#0f172a;border-color:#334155}
+        html.dark .score-box{background:linear-gradient(135deg,#0f172a,#1e293b);border-color:#334155}
+        html.dark .btn-secondary{background:#1e293b;color:#e2e8f0;border-color:#334155}
+        html.dark .btn-home,html.dark .btn-dark-toggle{background:#1e293b;color:#94a3b8;border-color:#334155}
+        html.dark .step-indicator{background:#334155;color:#94a3b8}
+        html.dark .quiz-timer-bar{background:#1e293b;border-color:#334155}
+        html.dark .timer-track{background:#334155}
+        html.dark .diag-card.red{background:linear-gradient(to right,#3b1111,#1e293b)}
+        html.dark .ref-section{border-color:#334155}
+        html.dark h1,html.dark h2,html.dark h3,html.dark h4{color:#f1f5f9}
+        html.dark .header-title-group img{filter:brightness(0) invert(1)}
+        html.dark .img-container img{border-color:#334155}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-title-group">
+                <img src="https://i0.wp.com/sebenarnya.my/wp-content/uploads/2017/06/Logo-KKM-e1518677887552.jpg?fit=400%2C216&ssl=1" alt="Logo KKM" style="height:48px;width:auto;object-fit:contain;">
+                <div>
+                    <h1 class="header-title">Modul Ringkas Latihan Penyakit Berkaitan Haba</h1>
+                    <p class="header-subtitle">Jabatan Kesihatan Negeri Kedah</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="header-topic"><i class="fas fa-book-medical"></i> Topik: Pengesanan & Notifikasi HRI</div>
+                <button onclick="toggleDarkMode()" class="btn-dark-toggle" title="Mod Gelap/Cerah" id="dark-toggle"><i class="fas fa-moon"></i></button>
+                <button onclick="goHome()" class="btn-home" title="Kembali ke Laman Utama"><i class="fas fa-home"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="module-container">
+            <div id="progress-container" class="progress-container hidden"><div id="progress-bar" class="progress-bar"></div></div>
+            <div class="module-content">
+
+                <!-- STEP 0: Pendaftaran -->
+                <div id="step-0" class="step-content active" style="text-align:center;">
+                    <div class="alert alert-danger" style="text-align:left;margin:1rem auto 2.5rem;max-width:600px;">
+                        <div class="alert-icon"><i class="fas fa-broadcast-tower"></i></div>
+                        <div>
+                            <h3 style="color:var(--danger-700);margin-bottom:.5rem;">Maklumat Terkini Gelombang Haba</h3>
+                            <p style="font-size:.875rem;margin-bottom:.75rem;">Status terkini taburan suhu maksimum harian di Semenanjung Malaysia (Sumber: MetMalaysia).</p>
+                            <img src="https://www.met.gov.my/data/peninsular_heatwave.gif?nocache=1773879718059" alt="Peta Gelombang Haba" style="width:100%;max-width:400px;border-radius:var(--radius-sm);border:1px solid var(--danger-200);display:block;margin:0 auto;">
+                        </div>
+                    </div>
+
+                    <div class="avatar-circle"><i class="fas fa-user-md"></i></div>
+                    <h2 class="step-title">Pendaftaran Peserta</h2>
+                    <p class="step-desc">Sila lengkapkan butiran di bawah untuk merekod kehadiran CME anda.</p>
+
+                    <form id="registration-form" class="form-container" style="text-align:left;">
+                        <div class="form-group">
+                            <label class="form-label">Nama Penuh</label>
+                            <input type="text" id="reg-nama" required class="form-input" placeholder="Cth: Dr. Ahmad bin Ali">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">No. Kad Pengenalan</label>
+                            <input type="text" id="reg-ic" required class="form-input" placeholder="Cth: 880101-02-1234">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jawatan</label>
+                            <select id="reg-jawatan" required class="form-select">
+                                <option value="">Sila Pilih...</option>
+                                <option value="Pakar Perubatan">Pakar Perubatan</option>
+                                <option value="Pegawai Perubatan (MO)">Pegawai Perubatan (MO)</option>
+                                <option value="Penolong Pegawai Perubatan (MA)">Penolong Pegawai Perubatan (MA)</option>
+                                <option value="Jururawat Terlatih (SN)">Jururawat Terlatih (SN)</option>
+                                <option value="Lain-lain">Lain-lain</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:2rem;">
+                            <label class="form-label">Fasiliti Bertugas (Hospital/Klinik)</label>
+                            <input type="text" id="reg-fasiliti" required class="form-input" placeholder="Cth: Hospital Sultanah Bahiyah">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full">Mula Modul <i class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+
+                <!-- STEP 1: Pengenalan & Risiko -->
+                <div id="step-1" class="step-content">
+                    <div class="alert alert-danger">
+                        <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div>
+                            <h3 style="color:var(--danger-700);">MESEJ UTAMA CPRC NEGERI</h3>
+                            <p>"Negeri kita sedang berhadapan dengan Amaran Cuaca Panas. Anda di Jabatan Kecemasan Hospital dan Unit Kecemasan Klinik Kesihatan adalah 'mata dan telinga' sistem kesihatan awam. <strong style="background:var(--danger-200);padding:2px 6px;border-radius:4px;color:#7f1d1d;">Kesan dengan tepat, rawat dengan pantas, dan wajib lapor setiap kes.</strong>" (KKM, 2021; MOH, 2016)</p>
+                        </div>
+                    </div>
+
+                    <div class="img-container">
+                        <img src="https://www.met.gov.my/data/peninsular_heatwave.gif?nocache=1773879718059" alt="Peta Heatwave MetMalaysia" style="max-height:400px;object-fit:contain;background:#fff;padding:10px;">
+                    </div>
+
+                    <h2 class="step-title" style="font-size:1.75rem;">Kenapa Modul Ini Penting Sekarang?</h2>
+                    <p class="step-desc"><strong>KEMAS KINI STATUS CUACA PANAS (18 MAC 2026 | 4.00 petang)</strong><br>Berdasarkan data terkini dan ramalan cuaca Jabatan Meteorologi Malaysia, ancaman krisis kesihatan awam paling kritikal kini tertumpu di <strong>Daerah Pokok Sena</strong> yang telah mencapai status Gelombang Haba.</p>
+
+                    <div class="grid-2">
+                        <div class="info-card orange">
+                            <h4><i class="fas fa-cloud-sun"></i> Ramalan Cuaca Pokok Sena (19 - 25 Mac 2026)</h4>
+                            <p style="font-size:.875rem;color:#9a3412;margin-bottom:.5rem;">Berdasarkan unjuran 7 hari akan datang, cuaca esktrem dijangka berterusan:</p>
+                            <ul style="margin-bottom:1rem;color:#9a3412;font-size:.875rem;">
+                                <li>Suhu Maksimum: <strong>37°C</strong> berterusan setiap hari.</li>
+                                <li>Suhu Minimum: <strong>23°C</strong>.</li>
+                                <li>Status Cuaca: <strong>Tiada hujan</strong> sepanjang tempoh ramalan.</li>
+                            </ul>
+                            <p style="font-size:.75rem;color:#c2410c;font-style:italic;text-align:center;">Sumber rujukan data: Jabatan Meteorologi Malaysia</p>
+                        </div>
+                        <div class="info-card blue">
+                            <h4><i class="fas fa-chart-line"></i> Status Amaran & Risiko Semasa</h4>
+                            <ul style="margin-bottom:1rem;color:#0c4a6e;font-size:.875rem;">
+                                <li style="margin-bottom:.75rem;">
+                                    <strong style="color:#991b1b;">Tahap 2 (Gelombang Haba): Pokok Sena (Kedah)</strong><br>
+                                    <em style="font-size:.8em;color:#475569;">Suhu maksimum harian 37-40°C sekurang-kurangnya selama 3 hari berturut-turut.</em>
+                                </li>
+                                <li>
+                                    <strong>Tahap 1 (Berjaga-Jaga): Perlis, Kubang Pasu, Baling, Padang Terap dan Pendang</strong><br>
+                                    <em style="font-size:.8em;color:#475569;">Suhu maksimum harian 35-37°C sekurang-kurangnya selama 3 hari berturut-turut.</em>
+                                </li>
+                            </ul>
+                            <p style="color:#0c4a6e;font-size:.875rem;border-top:1px solid #bae6fd;padding-top:.75rem;">Tekanan haba kumulatif ini menuntut kepekaan tinggi anggota kesihatan bagi mengesan kes HRI dengan pantas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Bahagian 1 - Diagnosis -->
+                <div id="step-2" class="step-content">
+                    <span class="step-badge">Bahagian 1</span>
+                    <h2 class="step-title">Pengesanan Kes (Diagnosis Tepat)</h2>
+                    <p class="step-desc">HRI adalah spektrum penyakit. Kepantasan anda membezakan tahap HRI menentukan nyawa pesakit dan ketepatan data epidemiologi.</p>
+
+                    <div class="img-container" style="background:var(--slate-50);padding:1rem;border-radius:var(--radius-lg);">
+                        <img src="https://i.ibb.co/vvDVSjVL/Untitled-design.png" alt="Infografik Pengesanan Kes HRI" style="width:100%;max-height:600px;object-fit:contain;">
+                    </div>
+
+                    <div class="diag-card">
+                        <div class="diag-icon"><i class="fas fa-walking"></i></div>
+                        <div class="diag-content">
+                            <h3>1. Kekejangan Haba (Heat Cramps)</h3>
+                            <ul>
+                                <li><strong>Kriteria:</strong> Suhu badan normal/sedikit tinggi. Otot (betis/paha) kejang tiba-tiba selepas berpeluh lebat.</li>
+                                <li><strong>Status Mental:</strong> Sedar penuh (Alert).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="diag-card">
+                        <div class="diag-icon" style="background:var(--warning-100);color:var(--warning-600);"><i class="fas fa-dizzy"></i></div>
+                        <div class="diag-content">
+                            <h3>2. Kelesuan Haba (Heat Exhaustion)</h3>
+                            <ul>
+                                <li><strong>Kriteria:</strong> Suhu teras meningkat tetapi <strong>< 40°C</strong>. Takikardia, pucat, pening, loya, kulit berpeluh lencun.</li>
+                                <li><strong>Status Mental:</strong> <span style="color:var(--success-600);font-weight:bold;">NORMAL</span> (Tiada disfungsi CNS). Pesakit letih tetapi waras.</li>
+                                <li><strong>Tindakan:</strong> Hidrasi (IV/Oral) dan rehat di tempat sejuk. Boleh melarat ke strok haba jika diabaikan.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="diag-card red">
+                        <div class="diag-icon"><i class="fas fa-ambulance"></i></div>
+                        <div class="diag-content">
+                            <h3 style="color:var(--danger-700);"><i class="fas fa-ambulance"></i> 3. Strok Haba (Heat Stroke)</h3>
+                            <ul>
+                                <li style="color:#991b1b;"><strong>Kriteria:</strong> Suhu teras badan <strong>≥ 40°C (104°F)</strong>.</li>
+                                <li style="color:#991b1b;"><strong>RED FLAG 🚩:</strong> Status Mental <strong>TIDAK NORMAL / DISFUNGSI CNS</strong>. (Kekeliruan, meracau, agresif, sawan, koma).</li>
+                                <li style="color:#991b1b;"><strong>Tindakan:</strong> Mulakan <em>Rapid Cooling</em> SERTA-MERTA. Sasaran: 39°C dalam masa 30 minit.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <div class="alert-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>
+                            <h4>Senario Kes 1</h4>
+                            <p style="margin-bottom:.5rem;">Buruh binaan (30 tahun) dibawa jam 2.30 petang. Suhu 37°C di luar. Mengadu sakit otot betis teruk. Suhu tympanic 37.5°C, nadi 90 bpm, GCS 15/15.</p>
+                            <p style="font-style:italic;font-weight:600;">Ulasan: Ini adalah Heat Cramps kerana GCS normal (15/15) dan suhu < 40°C. Berikan ORS dan regangan.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Bahagian 2 - Kesilapan -->
+                <div id="step-3" class="step-content">
+                    <span class="step-badge" style="background:var(--danger-50);color:var(--danger-700);border-color:var(--danger-100);">Bahagian 2</span>
+                    <h2 class="step-title">Kesilapan Lazim Diagnosis (Pitfalls) ⚠️</h2>
+                    <p class="step-desc">Elakkan kesilapan berikut yang sering berlaku di Jabatan Kecemasan.</p>
+
+                    <div class="img-container" style="background:var(--slate-50);padding:1rem;border-radius:var(--radius-lg);">
+                        <img src="https://i.ibb.co/TMmGrz5k/Renjatan-Shock.png" alt="Jenis Renjatan Haba" style="width:100%;max-height:600px;object-fit:contain;">
+                    </div>
+
+                    <div class="myth-card">
+                        <h3>Mitos 1: "Pesakit masih berpeluh lencun, mustahil ini Strok Haba."</h3>
+                        <p><strong style="color:var(--danger-600);">SALAH!</strong> Terdapat 2 jenis Strok Haba. <em>Classic Heat Stroke</em> (warga emas) memang berkulit kering. Tetapi <em>Exertional Heat Stroke</em> (pekerja/atlet) <strong>mungkin masih berpeluh/lembap</strong> semasa tiba di ED. Jangan tunggu kulit kering untuk diagnos!</p>
+                    </div>
+
+                    <div class="myth-card">
+                        <h3>Mitos 2: Hanya bergantung kepada suhu tympanic (telinga).</h3>
+                        <p><strong style="color:var(--danger-600);">SALAH!</strong> Suhu rektal (<em>Rectal Temperature</em>) adalah <strong>Gold Standard</strong> untuk mengukur suhu teras pesakit disyaki Strok Haba. Suhu luaran tidak tepat semasa fasa renjatan.</p>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <div class="alert-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>
+                            <h4>Senario Kes 2</h4>
+                            <p style="margin-bottom:.5rem;">Lelaki warga emas (72 tahun) keliru dan meracau di rumah beratap zink panas. Suhu telinga 38.5°C, kulit panas, merah & kering. MO enggan diagnos Strok Haba sebab tak bersenam.</p>
+                            <p style="font-style:italic;font-weight:600;">Ulasan: Kesilapan MO adalah guna suhu telinga, bukan suhu teras. Pesakit alami Classic Heat Stroke (ditandai dengan anhidrosis/kulit kering).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Bahagian 3 - Notifikasi -->
+                <div id="step-4" class="step-content">
+                    <span class="step-badge">Bahagian 3</span>
+                    <h2 class="step-title">Mandatori Notifikasi & Pelaporan</h2>
+                    <p class="step-desc">Semasa tempoh Amaran Cuaca Panas, sistem pelaporan HRI bertukar dari Bulanan kepada <strong style="color:var(--danger-600);background:var(--danger-50);padding:2px 6px;border-radius:4px;border:1px solid var(--danger-200);">RETEN HARIAN</strong>.</p>
+
+                    <div class="workflow">
+                        <h3 style="margin-bottom:1.5rem;">Aliran Kerja MO Kecemasan (SOP):</h3>
+                        <div class="workflow-step">
+                            <div class="workflow-num">1</div>
+                            <div>
+                                <h4>Rawat & Diagnos</h4>
+                                <p>Buat diagnosa awal di zon kecemasan.</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-num">2</div>
+                            <div>
+                                <h4>Pengesahan (Verifikasi)</h4>
+                                <p>Wajib dapatkan pengesahan Pakar Kecemasan (EP) / Pakar Perubatan Keluarga (FMS).</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-num">3</div>
+                            <div>
+                                <h4>Senarai Talian (Line Listing)</h4>
+                                <p>Isi demografi lengkap pesakit dan status wad.</p>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-num" style="background:var(--danger-100);color:var(--danger-600);">4</div>
+                            <div>
+                                <h4>Penghantaran Reten</h4>
+                                <p>Serahkan data kepada Unit KPAS / PPKP fasiliti selewat-lewatnya jam <strong>8.00 PAGI esoknya</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="callout-phone">
+                            <i class="fas fa-phone-alt"></i> Untuk Strok Haba/Kematian, telefon Pejabat Kesihatan Daerah (PKD) SEGERA!
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <div class="alert-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div>
+                            <h4>Senario Kes 3</h4>
+                            <p style="margin-bottom:.5rem;">Pesakit meninggal dunia di ICU. MO simpan fail untuk hantar laporan bulan depan.</p>
+                            <p style="font-style:italic;font-weight:600;">Ulasan: Kesalahan prosedur. Reten wajib setiap hari. PKD perlu dihubungi segera untuk siasatan kematian akibat bencana cuaca.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: Kuiz -->
+                <div id="step-5" class="step-content">
+                    <span class="step-badge">Bahagian 4</span>
+                    <h2 class="step-title">Ujian Kefahaman Klinikal</h2>
+                    <p class="step-desc">Jawab semua soalan di bawah. Keputusan akan direkodkan di bawah nama anda.</p>
+                    <div class="quiz-timer-bar" id="quiz-timer">
+                        <i class="fas fa-hourglass-half" style="color:var(--primary-500)"></i>
+                        <div class="timer-track"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+                        <div class="timer-text" id="timer-text">10:00</div>
+                    </div>
+                    <div id="quiz-container"></div>
+                </div>
+
+                <!-- STEP 6: Result -->
+                <div id="step-6" class="step-content result-screen">
+                    <br>
+                    <i class="fas fa-check-circle result-icon"></i>
+                    <h2 class="step-title" style="font-size:2.5rem;">Modul Selesai!</h2>
+                    <p class="step-desc">Tahniah <span id="display-nama" style="font-weight:700;color:var(--primary-700);"></span>, rekod CME anda telah berjaya disimpan.</p>
+
+                    <div class="score-box">
+                        <div class="score-title">Markah Kuiz Anda</div>
+                        <div><span class="score-value" id="display-score">0</span><span class="score-total">/10</span></div>
+                    </div>
+
+                    <button onclick="shareWhatsApp()" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> Kongsi Keputusan via WhatsApp</button>
+                    <div id="sheets-status" class="hidden"></div>
+
+                    <div class="ref-section">
+                        <h4>Senarai Rujukan (APA Style)</h4>
+                        <ul>
+                            <li>Department of Occupational Safety and Health. (2016). <em>Guidelines on heat stress management at workplace</em>. Ministry of Human Resources Malaysia.</li>
+                            <li>Kementerian Kesihatan Malaysia. (2021). <em>Pelan tindakan pengurusan risiko kesihatan akibat gelombang haba</em>. Bahagian Kawalan Penyakit.</li>
+                            <li>Ministry of Health Malaysia. (2016). <em>Clinical guidelines on management of heat related illness at health clinic and emergency and trauma department</em>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Navigation -->
+            <div id="nav-footer" class="nav-footer hidden">
+                <button id="btn-prev" onclick="prevStep()" class="btn btn-secondary hidden"><i class="fas fa-arrow-left"></i> Kembali</button>
+                <div id="step-indicator" class="step-indicator"><span class="current">1</span> / <span>5</span></div>
+                <button id="btn-next" onclick="nextStep()" class="btn btn-primary">Seterusnya <i class="fas fa-arrow-right"></i></button>
+                <button id="btn-submit" onclick="submitQuiz()" class="btn btn-success hidden">Hantar Jawapan <i class="fas fa-check"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 6;
+        const contentSteps = 5;
+        let userData = { nama: '', ic: '', jawatan: '', fasiliti: '' };
+        let quizTimerInterval = null;
+        let quizTimeLeft = 600; // 10 minutes in seconds
+        const QUIZ_DURATION = 600;
+
+        const quizQuestions = [
+            { question: "Apakah kriteria utama bagi mendiagnos Strok Haba (Heat Stroke)?", options: ["Suhu teras ≥ 40°C & disfungsi CNS (status mental tak normal)", "Suhu badan normal & otot kejang", "Suhu > 38°C & pesakit letih tetapi waras", "Pesakit berhenti berpeluh sahaja"], answer: 0 },
+            { question: "Apakah status mental pesakit yang mengalami Kelesuan Haba (Heat Exhaustion)?", options: ["Meracau", "Koma", "Normal (Sedar penuh dan waras)", "Sawan"], answer: 2 },
+            { question: "Apakah 'Gold Standard' untuk mengukur suhu teras pesakit yang disyaki Strok Haba?", options: ["Suhu axilla (ketiak)", "Suhu tympanic (telinga)", "Suhu dahi (infrared)", "Suhu rektal (dubur)"], answer: 3 },
+            { question: "MITOS: Pesakit yang sedang berpeluh lencun mustahil sedang mengalami Strok Haba.", options: ["Betul", "Salah"], answer: 1 },
+            { question: "Apakah tindakan serta-merta (immediate action) bagi kes Strok Haba di Jabatan Kecemasan?", options: ["Beri air minuman sejuk", "Mula Rapid Cooling serta-merta", "Tunggu ujian darah penuh (FBC)", "Rujuk pakar psikiatri"], answer: 1 },
+            { question: "Apakah sasaran suhu teras apabila melakukan 'Rapid Cooling' dalam masa 30 minit pertama?", options: ["36°C", "37.5°C", "39°C", "Normal"], answer: 2 },
+            { question: "Adakah Kekejangan Haba (Heat Cramps) melibatkan perubahan status mental pesakit?", options: ["Ya", "Tidak"], answer: 1 },
+            { question: "Semasa Amaran Cuaca Panas diaktifkan, kekerapan pelaporan kes HRI kepada PPKP/Unit KPAS bertukar kepada:", options: ["Reten Mingguan", "Reten Bulanan", "Reten Harian", "Tiada pelaporan perlu"], answer: 2 },
+            { question: "Bilakah masa paling lewat untuk MO menyerahkan reten data HRI kepada unit berkaitan pada keesokan harinya?", options: ["Jam 8.00 Pagi", "Jam 12.00 Tengahari", "Jam 5.00 Petang", "Bila-bila masa sebelum tamat syif"], answer: 0 },
+            { question: "Apakah tindakan jika terdapat kes kematian yang disyaki akibat komplikasi Strok Haba?", options: ["Tunggu laporan post-mortem bulan depan", "Telefon Pejabat Kesihatan Daerah (PKD) SEGERA", "Simpan dalam fail jabatan", "Hubungi polis sahaja"], answer: 1 }
+        ];
+
+        // === AUTO-SAVE ===
+        function saveProgress() {
+            const data = { currentStep, userData, timestamp: Date.now() };
+            localStorage.setItem('hri_module_progress', JSON.stringify(data));
+        }
+
+        function loadProgress() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('hri_module_progress'));
+                if (saved && saved.currentStep > 0 && (Date.now() - saved.timestamp) < 86400000) {
+                    if (confirm('Anda mempunyai kemajuan yang disimpan. Sambung semula?')) {
+                        userData = saved.userData;
+                        document.getElementById('progress-container').classList.remove('hidden');
+                        document.getElementById('nav-footer').classList.remove('hidden');
+                        goToStep(saved.currentStep);
+                        return true;
+                    }
+                }
+            } catch(e) {}
+            return false;
+        }
+
+        function clearProgress() { localStorage.removeItem('hri_module_progress'); }
+
+        // === INIT ===
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('registration-form').addEventListener('submit', function(e) { e.preventDefault(); submitRegistration(); });
+            generateQuiz();
+            initDarkMode();
+            loadProgress();
+        });
+
+        function submitRegistration() {
+            userData.nama = document.getElementById('reg-nama').value;
+            userData.ic = document.getElementById('reg-ic').value;
+            userData.jawatan = document.getElementById('reg-jawatan').value;
+            userData.fasiliti = document.getElementById('reg-fasiliti').value;
+            document.getElementById('progress-container').classList.remove('hidden');
+            document.getElementById('nav-footer').classList.remove('hidden');
+            goToStep(1);
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.step-content').forEach((el, index) => {
+                el.classList.toggle('active', index === currentStep);
+            });
+            document.getElementById('progress-bar').style.width = `${(currentStep / totalSteps) * 100}%`;
+
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            const btnSubmit = document.getElementById('btn-submit');
+            const indicator = document.getElementById('step-indicator');
+
+            btnPrev.classList.toggle('hidden', !(currentStep > 1 && currentStep < totalSteps));
+
+            if (currentStep === 0 || currentStep === totalSteps) {
+                document.getElementById('nav-footer').classList.add('hidden');
+            } else {
+                document.getElementById('nav-footer').classList.remove('hidden');
+            }
+
+            if (currentStep === totalSteps - 1) {
+                btnNext.classList.add('hidden');
+                btnSubmit.classList.remove('hidden');
+            } else {
+                btnNext.classList.remove('hidden');
+                btnSubmit.classList.add('hidden');
+            }
+
+            // Update step indicator
+            if (currentStep >= 1 && currentStep <= contentSteps) {
+                indicator.innerHTML = `<i class="fas fa-layer-group"></i> <span class="current">${currentStep}</span> / <span>${contentSteps}</span>`;
+            }
+        }
+
+        function goToStep(step) {
+            const prevStep = currentStep;
+            currentStep = step;
+            updateUI();
+            saveProgress();
+            // Start timer when entering quiz (step 5)
+            if (step === 5 && prevStep !== 5) { startQuizTimer(); }
+            // Stop timer when leaving quiz
+            if (step !== 5 && quizTimerInterval) { stopQuizTimer(); }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function nextStep() { if (currentStep < totalSteps - 1) goToStep(currentStep + 1); }
+        function prevStep() { if (currentStep > 1) goToStep(currentStep - 1); }
+
+        function goHome() {
+            if (confirm("Anda pasti ingin kembali? Kemajuan anda akan hilang.")) {
+                clearProgress();
+                document.getElementById('registration-form').reset();
+                document.getElementById('progress-container').classList.add('hidden');
+                document.getElementById('nav-footer').classList.add('hidden');
+                goToStep(0);
+            }
+        }
+
+        function generateQuiz() {
+            const container = document.getElementById('quiz-container');
+            let html = '';
+            quizQuestions.forEach((q, index) => {
+                html += `<div class="quiz-item" id="q-block-${index}">
+                    <div class="quiz-question">${index + 1}. ${q.question}</div>
+                    <div class="quiz-options" id="q-opts-${index}">`;
+                q.options.forEach((opt, optIndex) => {
+                    html += `<label class="quiz-option" id="opt-${index}-${optIndex}">
+                        <input type="radio" name="q${index}" value="${optIndex}">
+                        <div class="radio-custom"></div><span>${opt}</span>
+                    </label>`;
+                });
+                html += `</div><div id="feedback-${index}" class="quiz-feedback hidden"></div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function submitQuiz() {
+            let allAnswered = true;
+            let score = 0;
+
+            for (let i = 0; i < quizQuestions.length; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const block = document.getElementById(`q-block-${i}`);
+                if (!selected) {
+                    allAnswered = false;
+                    block.style.borderColor = 'var(--danger-500)';
+                    block.style.boxShadow = '0 0 0 2px var(--danger-50)';
+                } else {
+                    block.style.borderColor = 'var(--slate-200)';
+                    block.style.boxShadow = 'none';
+                }
+            }
+
+            if (!allAnswered) { alert("Sila jawab semua soalan sebelum menghantar."); return; }
+
+            // Show feedback for each question
+            for (let i = 0; i < quizQuestions.length; i++) {
+                const selectedVal = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+                const correctVal = quizQuestions[i].answer;
+                const isCorrect = selectedVal === correctVal;
+                if (isCorrect) score++;
+
+                // Highlight selected option
+                const selectedOpt = document.getElementById(`opt-${i}-${selectedVal}`);
+                selectedOpt.classList.add(isCorrect ? 'correct' : 'wrong');
+
+                // Highlight correct option if wrong
+                if (!isCorrect) {
+                    document.getElementById(`opt-${i}-${correctVal}`).classList.add('correct');
+                }
+
+                // Show feedback text
+                const fb = document.getElementById(`feedback-${i}`);
+                fb.classList.remove('hidden');
+                if (isCorrect) {
+                    fb.className = 'quiz-feedback correct-fb';
+                    fb.innerHTML = '<i class="fas fa-check-circle"></i> Betul!';
+                } else {
+                    fb.className = 'quiz-feedback wrong-fb';
+                    fb.innerHTML = `<i class="fas fa-times-circle"></i> Salah. Jawapan betul: ${quizQuestions[i].options[correctVal]}`;
+                }
+
+                // Disable all radio buttons
+                document.querySelectorAll(`input[name="q${i}"]`).forEach(r => r.disabled = true);
+                document.querySelectorAll(`#q-opts-${i} .quiz-option`).forEach(o => o.style.cursor = 'default');
+            }
+
+            document.getElementById('display-nama').innerText = userData.nama;
+            document.getElementById('display-score').innerText = score;
+
+            const scoreEl = document.getElementById('display-score');
+            if (score >= 8) scoreEl.style.color = 'var(--success-500)';
+            else if (score >= 5) scoreEl.style.color = 'var(--warning-500)';
+            else scoreEl.style.color = 'var(--danger-500)';
+
+            // Scroll to see feedback briefly, then auto-advance after delay
+            stopQuizTimer();
+            submitToSheets(score);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => goToStep(totalSteps), 2500);
+            clearProgress();
+        }
+
+        // === WHATSAPP SHARE ===
+        function shareWhatsApp() {
+            const score = document.getElementById('display-score').innerText;
+            const msg = `✅ *Modul HRI Selesai*\n\n👤 Nama: ${userData.nama}\n🏥 Fasiliti: ${userData.fasiliti}\n📊 Markah Kuiz: ${score}/10\n📅 Tarikh: ${new Date().toLocaleDateString('ms-MY')}\n\n_Modul Ringkas Latihan Penyakit Berkaitan Haba_\n_Jabatan Kesihatan Negeri Kedah_`;
+            const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        // === QUIZ TIMER ===
+        function startQuizTimer() {
+            quizTimeLeft = QUIZ_DURATION;
+            updateTimerDisplay();
+            quizTimerInterval = setInterval(() => {
+                quizTimeLeft--;
+                updateTimerDisplay();
+                if (quizTimeLeft <= 0) {
+                    stopQuizTimer();
+                    alert('⏰ Masa telah tamat! Jawapan anda akan dihantar secara automatik.');
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function stopQuizTimer() {
+            if (quizTimerInterval) { clearInterval(quizTimerInterval); quizTimerInterval = null; }
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(quizTimeLeft / 60);
+            const secs = quizTimeLeft % 60;
+            const timerText = document.getElementById('timer-text');
+            const timerFill = document.getElementById('timer-fill');
+            timerText.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            timerFill.style.width = `${(quizTimeLeft / QUIZ_DURATION) * 100}%`;
+            const isUrgent = quizTimeLeft <= 120;
+            timerText.classList.toggle('urgent', isUrgent);
+            timerFill.classList.toggle('urgent', isUrgent);
+        }
+
+        // === DARK MODE ===
+        function initDarkMode() {
+            const saved = localStorage.getItem('hri_dark_mode');
+            if (saved === 'true') { document.documentElement.classList.add('dark'); updateDarkIcon(); }
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('hri_dark_mode', isDark);
+            updateDarkIcon();
+        }
+
+        function updateDarkIcon() {
+            const btn = document.getElementById('dark-toggle');
+            const isDark = document.documentElement.classList.contains('dark');
+            btn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        // === GOOGLE SHEETS INTEGRATION ===
+        // HOW TO SET UP:
+        // 1. Create a Google Sheet with columns: Timestamp, Nama, IC, Jawatan, Fasiliti, Markah, Masa(saat)
+        // 2. Go to Extensions > Apps Script
+        // 3. Paste this code:
+        //    function doPost(e) {
+        //      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+        //      var data = JSON.parse(e.postData.contents);
+        //      sheet.appendRow([new Date(), data.nama, data.ic, data.jawatan, data.fasiliti, data.score, data.timeTaken]);
+        //      return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
+        //    }
+        // 4. Deploy as web app (Execute as: Me, Access: Anyone)
+        // 5. Copy the URL and paste it below:
+        const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxoFp37zcX6R99ZAqiBj6VFbvrAUV1lSzrJKXh5lUI99taxQXuLQJ3pdxqkqClSaddq/exec';
+
+        function submitToSheets(score) {
+            if (!SHEETS_WEBHOOK_URL) return; // Skip if no URL configured
+            const statusEl = document.getElementById('sheets-status');
+            statusEl.className = 'sheets-status sending';
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghantar data ke Google Sheets...';
+            statusEl.classList.remove('hidden');
+
+            const timeTaken = QUIZ_DURATION - quizTimeLeft;
+            const payload = {
+                nama: userData.nama,
+                ic: userData.ic,
+                jawatan: userData.jawatan,
+                fasiliti: userData.fasiliti,
+                score: score,
+                timeTaken: timeTaken
+            };
+
+            fetch(SHEETS_WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                statusEl.className = 'sheets-status sent';
+                statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Data berjaya dihantar ke Google Sheets';
+            })
+            .catch(() => {
+                statusEl.className = 'sheets-status error';
+                statusEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Gagal menghantar. Sila hubungi pentadbir.';
+            });
+        }
+    </script>
+</body>
+</html>
